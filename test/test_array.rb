@@ -1,8 +1,6 @@
 require 'test/unit'
 require 'aggrego'
 
-include Aggrego::Array
-
 class TestArray < Test::Unit::TestCase
   def setup
     @a = [1,2,3,4,5,6]

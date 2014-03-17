@@ -9,5 +9,8 @@
 
 module Aggrego
   # Your code goes here...
-  Array.extend(Aggrego::Array)
+end
+
+class Array
+  include Aggrego::Array
 end
