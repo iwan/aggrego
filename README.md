@@ -21,7 +21,7 @@ Or install it yourself as:
 Start by defining how the macrozones are composed:
 
 ```ruby
-rules = AggregationRules.new
+rules = Rules.new
 rules.add_rule(:m_sici, %w(prgp sici))
 ```
 Means that the macrozone :m_sici is composed by two zones: :prgp and :sici.
@@ -37,21 +37,21 @@ rules.add_rule(:m_italia, %w(nord cnor csud sud fogn brnn rosn sici prgp sard))
 
 These rules are applied to your set of zones through an order you can set automatically:
 ```ruby
-rules.auto_sort # the rules are sorted from the largest (in terms of number of zones) to smallest
+rules.auto_sort! # the rules are sorted from the largest (in terms of number of zones) to smallest
 ```
 or manually:
 ```ruby
-rules.rules_order([:m_italia, :m_conti, :m_sud, :m_isole, :m_sici, :m_nord])
+rules.sort!([:m_italia, :m_conti, :m_sud, :m_isole, :m_sici, :m_nord])
 ```
 
 Then you set up the set of zones:
 ```ruby
-aggregate = Aggregate.new([:cnor, :csud, :sud, :sici, :sard, :prgp, :brnn, :fogn, :rosn])
+a = Aggregate.new([:cnor, :csud, :sud, :sici, :sard, :prgp, :brnn, :fogn, :rosn])
 ```
 
 and your aggregator:
 ```ruby
-a = Aggregator.new(rules)
+a = Engine.new(rules)
 r = a.fuse(aggregate)
 ```
 

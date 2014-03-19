@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Aggrego::VERSION
   spec.authors       = ["Iwan Buetti"]
   spec.email         = ["iwan.buetti@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = "Aggregate elements (zones or other) from a set of rules"
+  spec.summary       = "Aggregate elements (zones or other) from a set of rules"
   spec.homepage      = ""
   spec.license       = "MIT"
 

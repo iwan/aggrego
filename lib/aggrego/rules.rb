@@ -1,17 +1,28 @@
 module Aggrego
-  class AggregationRules
-    def initialize
+
+  class Rules
+
+    def initialize(options={})
+      @force_to_sym = (options[:force_to_sym]==true)
       @h = {}
     end
 
     def add_rule(aggr_name, components)
-      @h[aggr_name.to_sym] = components.map(&:to_sym)
+      aggr_name = aggr_name.to_sym if @force_to_sym
+      components.map!(&:to_sym) if @force_to_sym
+      @h[aggr_name] = components
     end
 
-    def define_rules_order(arr)
+    def add_rules(hash)
+      if @force_to_sym
+        hash = Hash[hash.to_a.map{|e| [e[0].to_sym, e[1].map(&:to_sym)]}]
+      end
+    end
+
+    def sort!(arr)
       h = {}
       arr.each do |el|
-        el = el.to_sym
+        el = el.to_sym if @force_to_sym
         raise "Aggregate name not present!" if !@h.has_key?(el)
         h[el] = @h[el]
       end
@@ -19,7 +30,7 @@ module Aggrego
     end
     
     # from bigger array to smaller
-    def auto_order
+    def auto_sort!
       @h = Hash[@h.to_a.sort{|x,y| y[1].size <=> x[1].size}] # Hash[h.to_a.sort{|x,y| y[1].size <=> x[1].size}]
     end
 
@@ -35,8 +46,16 @@ module Aggrego
       @h.dup
     end
 
+    def size
+      @h.size
+    end
+
     def to_s
       @h
+    end
+
+    def keys
+      @h.keys
     end
   end
 end
