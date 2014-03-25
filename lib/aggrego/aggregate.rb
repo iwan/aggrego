@@ -88,7 +88,7 @@ module Aggrego
       as = "#{a.join(', ')} and #{as}" if !a.empty?
       bs = b.pop
       bs = "#{b.join(', ')} and #{bs}" if !b.empty?
-      "#{as} except #{bs}"
+      bs.empty? ? as : "#{as} except #{bs}"
     end
 
     def equal_to?(string)
@@ -121,23 +121,3 @@ module Aggrego
 
   end
 end
-
-# include Aggrego
-# class Array
-#   def included_in?(other)
-#     return false if size>other.size
-#     self.each{|e| return false if !other.include?(e)}
-#     true
-#   end
-
-#   def delta(other)
-#     [self-other, other-self]
-#   end
-
-# end
-# a = Aggregate.new([:a, :b, :c])
-# b = a.positive_match(:ab, [:a, :b])
-
-
-
-
