@@ -2,7 +2,11 @@ module Aggrego
   class AggregatesArray < Array
     
     def best
-      self.sort.first
+      first
+    end
+
+    def sort
+      AggregatesArray.new(super)
     end
   end
 end

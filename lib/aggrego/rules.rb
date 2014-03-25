@@ -15,7 +15,9 @@ module Aggrego
 
     def add_rules(hash)
       if @force_to_sym
-        hash = Hash[hash.to_a.map{|e| [e[0].to_sym, e[1].map(&:to_sym)]}]
+        @h = Hash[hash.to_a.map{|e| [e[0].to_sym, e[1].map(&:to_sym)]}]
+      else
+        @h = hash
       end
     end
 

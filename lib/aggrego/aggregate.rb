@@ -7,6 +7,7 @@ module Aggrego
     def initialize(incl_atoms, excl_atoms=[], incl_molec=[], excl_molec=[], rules={})
       %w(incl_atoms excl_atoms incl_molec excl_molec).each do |a|
         v = eval(a)
+        # puts "--#{v.inspect} (#{v.class}"
         v = FORCE_TO_SYM ? v.map(&:to_sym) : v
         v = Aggrego::Array.new(v) unless v.is_a?(Aggrego::Array)
         instance_variable_set("@#{a}", v)

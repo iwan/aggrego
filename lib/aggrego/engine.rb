@@ -7,15 +7,23 @@ module Aggrego
     end
     
     def aggregate(*atoms)
-      atoms=atoms[0] if (atoms.size==1 && atoms[0].is_a?(Array))
-      if atoms[0].is_a?(Aggrego::Aggregate)
+      # e.aggregate(Aggregate.new([:cnor, :csud, :sud, :sici, :sard, :prgp, :brnn, :fogn, :rosn]))
+      # ---> i get an array with only one element of type Aggregate
+      # e.aggregate([:cnor, :csud, :sud, :sici, :sard, :prgp, :brnn, :fogn, :rosn])
+      # ---> i get an array with only one element of type Array 
+      # e.aggregate(:cnor, :csud, :sud, :sici, :sard, :prgp, :brnn, :fogn, :rosn)
+      # ---> i get an array with the elements
+
+      if atoms.size==1 && atoms[0].is_a?(Aggregate)
         atoms = atoms[0]
+      elsif atoms.size==1 && (atoms[0].is_a?(::Array) || atoms[0].is_a?(Array))
+        atoms = Aggregate.new(atoms[0])
       else
         atoms = Aggregate.new(atoms)
       end
       @candidates = AggregatesArray.new
       fuse(atoms, @rules.dup)
-      @candidates
+      @candidates.sort
     end
 
     private
