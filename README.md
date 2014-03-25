@@ -4,9 +4,9 @@ Given a set of zones (or whatever you want) like
 
     north, north_central, south_central, south, priolo
 
-i would like to express these zones in a more succinct mode like
+i would like to express these zones in a more succinct mode, like
 
-    mainland and priolo
+    continent and priolo
 
 or (for another example)
 
@@ -36,7 +36,7 @@ Start by defining how the macrozones are composed:
 rules = Rules.new
 rules.add_rule(:m_sici, %w(prgp sici))
 ```
-Means that the macrozone :m_sici is composed by two zones: :prgp and :sici.
+Means that the macrozone `:m_sici is` composed by two zones: `:prgp` and `:sici`.
 And so on:
 
 ```ruby
@@ -63,22 +63,17 @@ e = Engine.new(rules)
 
 Now simply call the aggregate method passing a list of zones:
 ```ruby
-result = e.aggregate(:cnor, :csud, :sud, :sici, :sard, :prgp, :brnn, :fogn, :rosn)
+results = e.aggregate(:cnor, :csud, :sud, :sici, :sard, :prgp, :brnn, :fogn, :rosn)
 ```
 
+The `results` is an object of class `AggregatesArray` (a subclass of `Array`), where the elements are objects of class `Aggregate` ordered by a score.
 
+You just have to pick the `first` or the `best`:
 
-Then you set up the set of zones:
 ```ruby
-a = Aggregate.new([:cnor, :csud, :sud, :sici, :sard, :prgp, :brnn, :fogn, :rosn])
+result = results.best
+puts result.to_s
 ```
-
-and your aggregator:
-```ruby
-a = Engine.new(rules)
-r = a.fuse(aggregate)
-```
-
 
 
 
