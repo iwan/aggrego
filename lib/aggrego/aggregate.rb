@@ -88,7 +88,7 @@ module Aggrego
       as = "#{a.join(', ')} and #{as}" if !a.empty?
       bs = b.pop
       bs = "#{b.join(', ')} and #{bs}" if !b.empty?
-      bs.empty? ? as : "#{as} except #{bs}"
+      (bs.nil? || bs.empty?) ? as : "#{as} except #{bs}"
     end
 
     def equal_to?(string)
