@@ -4,6 +4,8 @@ module Aggrego
 
     def initialize(rules)
       @rules = rules
+      @log = Logger.new(STDOUT)
+      @log.level = LOGGER_LEVEL
     end
     
     def aggregate(*atoms)
@@ -22,6 +24,7 @@ module Aggrego
         atoms = Aggregate.new(atoms)
       end
       @candidates = AggregatesArray.new
+      @candidates << atoms
       fuse(atoms, @rules.dup)
       @candidates.sort
     end
@@ -32,13 +35,21 @@ module Aggrego
       while rule = rules.shift
         mol_name, mol_atoms = rule[0], rule[1]
 
+        @log.debug aggr.content("---A---")
         if a = aggr.positive_match(mol_name, mol_atoms)
+          @log.debug a.content
           @candidates << a
-          fuse(a, rules, level-1)
+          fuse(a, rules.dup, level-1)
+        else
+          @log.debug "--- A: Nope! ---"
         end
+        @log.debug aggr.content("---B---")
         if a = aggr.negative_match(mol_name, mol_atoms)
+          @log.debug a.content
           @candidates << a
-          fuse(a, rules, level-1)
+          fuse(a, rules.dup, level-1)
+        else
+          @log.debug "--- B: Nope! ---"
         end
       end
     end

@@ -1,4 +1,3 @@
-require 'logger'
 module Aggrego
   class Aggregate
     FORCE_TO_SYM = true
@@ -13,7 +12,7 @@ module Aggrego
       end
       @rules = rules
       @log = Logger.new(STDOUT)
-      @log.level = Logger::INFO
+      @log.level = LOGGER_LEVEL
     end
 
     def equal?(other)
@@ -43,18 +42,17 @@ module Aggrego
     
     def positive_match(molecule_name, molecule_atoms)
       molecule_atoms = Aggrego::Array.new(molecule_atoms) unless molecule_atoms.is_a?(Aggrego::Array)
-
       molecule_atoms.map!(&:to_sym) if FORCE_TO_SYM
       molecule_name = molecule_name.to_sym if FORCE_TO_SYM
       @rules[molecule_name] = molecule_atoms
+
       @log.debug "Entering positive_match. :#{molecule_name} => #{molecule_atoms}"
-      @log.debug "@incl_atoms: #{@incl_atoms}, @excl_atoms: #{@excl_atoms}, @incl_molec: #{@incl_molec}, @excl_molec: #{@excl_molec}"
+      # @log.debug "@incl_atoms: #{@incl_atoms}, @excl_atoms: #{@excl_atoms}, @incl_molec: #{@incl_molec}, @excl_molec: #{@excl_molec}"
 
       return nil if (@incl_atoms & molecule_atoms).empty? # nothing (no atom) to remove
       incl_atoms, excl_atoms = @incl_atoms.delta(molecule_atoms)
       return nil if !(@excl_atoms & excl_atoms).empty? # i cannot add atoms already present in the set 'excl_atoms' (would be duplicated)
       incl_molec = @incl_molec.dup << molecule_name
-      @log.debug "incl_atoms: #{incl_atoms}, excl_atoms: #{excl_atoms}, incl_molec: #{incl_molec}"
       Aggregate.new(incl_atoms, excl_atoms+@excl_atoms, incl_molec, @excl_molec.dup, @rules.dup)
     end
 
@@ -63,13 +61,14 @@ module Aggrego
       molecule_name = molecule_name.to_sym if FORCE_TO_SYM
       molecule_atoms.map!(&:to_sym) if FORCE_TO_SYM
       @rules[molecule_name] = molecule_atoms
+      
       @log.debug "Entering negative_match. :#{molecule_name} => #{molecule_atoms}"
-      @log.debug "@incl_atoms: #{@incl_atoms}, @excl_atoms: #{@excl_atoms}, @incl_molec: #{@incl_molec}, @excl_molec: #{@excl_molec}"
+      # @log.debug "@incl_atoms: #{@incl_atoms}, @excl_atoms: #{@excl_atoms}, @incl_molec: #{@incl_molec}, @excl_molec: #{@excl_molec}"
       return nil if !molecule_atoms.included_in?(@excl_atoms) # nothing (no atom) to remove
       excl_atoms, incl_atoms = @excl_atoms.delta(molecule_atoms)
       return nil if !(@incl_atoms & incl_atoms).empty? # i can't add atoms already present in the set
       excl_molec = @excl_molec.dup << molecule_name
-      @log.debug "incl_atoms: #{incl_atoms}, excl_atoms: #{excl_atoms}, excl_molec: #{excl_molec}"
+      # @log.debug "incl_atoms: #{incl_atoms}, excl_atoms: #{excl_atoms}, excl_molec: #{excl_molec}"
       Aggregate.new(incl_atoms+@incl_atoms, excl_atoms, @incl_molec.dup, excl_molec, @rules.dup)
     end
 
@@ -78,6 +77,10 @@ module Aggrego
       @excl_atoms.dup
       @incl_molec.dup
       @excl_molec.dup
+    end
+
+    def content(msg="")
+      "#{msg}\n\t@incl_molec: #{@incl_molec}, \n\t@incl_atoms: #{@incl_atoms}, \n\t@excl_molec: #{@excl_molec}, \n\t@excl_atoms: #{@excl_atoms}"
     end
 
     def to_s
