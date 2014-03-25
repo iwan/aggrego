@@ -1,6 +1,18 @@
 # Aggrego
 
-TODO: Write a gem description
+Given a set of zones (or whatever you want) like
+
+    north, north_central, south_central, south, priolo
+
+i would like to express these zones in a more succinct mode like
+
+    mainland and priolo
+
+or (for another example)
+
+    italy except priolo
+      
+using a set of rules that define the rules of aggregation.
 
 ## Installation
 
@@ -28,11 +40,11 @@ Means that the macrozone :m_sici is composed by two zones: :prgp and :sici.
 And so on:
 
 ```ruby
-rules.add_rule(:m_nord, %w(nord))
-rules.add_rule(:m_sud, %w(cnor csud fogn brnn sud rosn))
-rules.add_rule(:m_isole, %w(sard prgp sici))
-rules.add_rule(:m_conti, %w(nord cnor csud sud fogn brnn rosn))
-rules.add_rule(:m_italia, %w(nord cnor csud sud fogn brnn rosn sici prgp sard))
+rules.add_rule(:m_nord, [:nord])
+rules.add_rule(:m_sud, [:cnor, :csud, :fogn, :brnn, :sud, :rosn])
+rules.add_rule(:m_isole, [:sard, :prgp, :sici])
+rules.add_rule(:m_conti, [:nord, :cnor, :csud, :sud, :fogn, :brnn, :rosn))
+rules.add_rule(:m_italia, [:nord, :cnor, :csud, :sud, :fogn, :brnn, :rosn, :sici, :prgp, :sard])
 ```
 
 These rules are applied to your set of zones through an order you can set automatically:
@@ -43,6 +55,18 @@ or manually:
 ```ruby
 rules.sort!([:m_italia, :m_conti, :m_sud, :m_isole, :m_sici, :m_nord])
 ```
+
+Then define the engine that will perform the aggregation and pass the rules object:
+```ruby
+e = Engine.new(rules)
+```
+
+Now simply call the aggregate method passing a list of zones:
+```ruby
+result = e.aggregate(:cnor, :csud, :sud, :sici, :sard, :prgp, :brnn, :fogn, :rosn)
+```
+
+
 
 Then you set up the set of zones:
 ```ruby
